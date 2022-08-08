@@ -31,7 +31,7 @@ wget -O$HOME/dotify https://raw.githubusercontent.com/Aptivi/dotify/main/dotify
 chmod +x $HOME/dotify
 ```
 
-* System install
+* System-wide install
 
 ```shell
 sudo wget -O/usr/local/bin/dotify https://raw.githubusercontent.com/Aptivi/dotify/main/dotify
