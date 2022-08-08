@@ -52,19 +52,6 @@ else
 	RUL=$(tput rmul)
 fi
 
-logo() {
-	# print dotify logo
-	printf "%s\n" "${BOLD}${FG_SKYBLUE}"
-	printf "%s\n" "d ss      sSSSs   sss sssss d d sss  Ss   sS "
-        printf "%s\n" "S   ~o   S     S      S     S S        S S   "
-        printf "%s\n" "S     b S       S     S     S S         S    "
-        printf "%s\n" "S     S S       S     S     S S sSSs    S    "
-        printf "%s\n" "S     P S       S     S     S S         S    "
-        printf "%s\n" "S    S   S     S      S     S S         S    "
-        printf "%s\n" "P ss\"     \"sss\"       P     P P         P  "  
-	printf "%s\n" "${RESET}"
-}
-
 # check if git exists
 if ! command -v git &> /dev/null; then
 	echo "[-] ${BOLD}git needs to be installed to proceed.${RESET}"
