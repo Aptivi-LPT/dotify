@@ -11,8 +11,8 @@ It can be installed either locally on your home directory or system-wide.
 * Local install
 
 ```shell
-curl -fsSL https://raw.githubusercontent.com/Aptivi/dotify/main/dotify > ~/.local/bin/dotify
-chmod +x ~/local/bin/dotify
+curl -fsSL https://raw.githubusercontent.com/Aptivi/dotify/main/dotify > $HOME/dotify
+chmod +x $HOME/dotify
 ```
 
 * System-wide install
@@ -27,8 +27,8 @@ sudo chmod +x /usr/local/bin/dotify
 * Local install
 
 ```shell
-wget -O~/dotify https://raw.githubusercontent.com/Aptivi/dotify/main/dotify
-chmod +x ~/dotify
+wget -O$HOME/dotify https://raw.githubusercontent.com/Aptivi/dotify/main/dotify
+chmod +x $HOME/dotify
 ```
 
 * System install
