@@ -111,6 +111,17 @@ find_dotfiles() {
 	printf "%s\n" "${dotfiles[@]}"
 }
 
+find_remote_dotfiles() {
+	include_folders=$1
+	printf "\n"
+	if [[ -z $include_folders ]]; then
+		readarray -t dotfiles < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" -type f )
+	else
+		readarray -t dotfiles < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" )
+	fi
+	printf "%s\n" "${dotfiles[@]}"
+}
+
 dot_pull() {
 	# pull changes (if any) from the remote repo
 	printf "\n%s\n" "[+] ${BOLD}Updating the dotfiles...${RESET}"
@@ -208,12 +219,14 @@ manage() {
 		printf "\n%s"   "[${BOLD}2${RESET}]   Push all changes to remote"
 		printf "\n%s"   "[${BOLD}3${RESET}]   Update local dotfiles from remote"
 		printf "\n%s"   "[${BOLD}4${RESET}]   List all local dotfiles"
-		printf "\n%s"   "[${BOLD}5${RESET}]   Copy local dotfiles to remote"
-		printf "\n%s"   "[${BOLD}6${RESET}]   Copy remote dotfiles to local"
-		printf "\n%s"   "[${BOLD}7${RESET}]   Compare (with folders)"
-		printf "\n%s"   "[${BOLD}8${RESET}]   List (with folders)"
-		printf "\n%s"   "[${BOLD}9${RESET}]   Copy to remote (with folders)"
-		printf "\n%s"   "[${BOLD}10${RESET}]  Copy to local (with folders)"
+		printf "\n%s"   "[${BOLD}5${RESET}]   List all remote dotfiles"
+		printf "\n%s"   "[${BOLD}6${RESET}]   Copy local dotfiles to remote"
+		printf "\n%s"   "[${BOLD}7${RESET}]   Copy remote dotfiles to local"
+		printf "\n%s"   "[${BOLD}8${RESET}]   Compare (with folders)"
+		printf "\n%s"   "[${BOLD}9${RESET}]   List (with folders)"
+		printf "\n%s"   "[${BOLD}10${RESET}]  List remote (with folders)"
+		printf "\n%s"   "[${BOLD}11${RESET}]  Copy to remote (with folders)"
+		printf "\n%s"   "[${BOLD}12${RESET}]  Copy to local (with folders)"
 		printf "\n%s\n" "[${BOLD}q/Q${RESET}] Exit dotify"
 		read -p "Select option [${BOLD}2${RESET}]: " -n 2 -r USER_INPUT
 		
@@ -223,12 +236,14 @@ manage() {
 			[2]* )   dot_push;;
 			[3]* )   dot_pull;;
 			[4]* )   find_dotfiles;;
-			[5]* )   copy_local_to_remote;;
-			[6]* )   copy_remote_to_local;;
-			[7]* )   diff_check "show" "yes";;
-			[8]* )   find_dotfiles "yes";;
-			[9]* )   copy_local_to_remote "yes";;
-			[10]* )  copy_remote_to_local "yes";;
+			[5]* )   find_remote_dotfiles;;
+			[6]* )   copy_local_to_remote;;
+			[7]* )   copy_remote_to_local;;
+			[8]* )   diff_check "show" "yes";;
+			[9]* )   find_dotfiles "yes";;
+			[10]* )  find_remote_dotfiles "yes";;
+			[11]* )  copy_local_to_remote "yes";;
+			[12]* )  copy_remote_to_local "yes";;
 			[q/Q]* ) exit;;
 			* )      printf "\n%s\n" "[-] Selected input is not valid.";;
 		esac
