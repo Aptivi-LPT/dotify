@@ -78,9 +78,9 @@ repo_check() {
 
 	# all paths are relative to HOME
 	if [[ -d ${HOME}/${DOT_REPO_NAME} ]]; then
-	        printf "\n%s\n" "[*] Found ${BOLD}${DOT_REPO_NAME}${RESET} in home directory!"
+	        printf "%s\n" "[*] Found ${BOLD}${DOT_REPO_NAME}${RESET} in home directory!"
 	else
-	        printf "\n\n%s\n" "[-] ${BOLD}${DOT_REPO_NAME}${RESET} doesn't exist."
+	        printf "%s\n" "[-] ${BOLD}${DOT_REPO_NAME}${RESET} doesn't exist."
 		read -p "[-] ${BOLD}Clone the repository again? [Y/n]: ${RESET}" -n 1 -r USER_INPUT
 		USER_INPUT=${USER_INPUT:-y}
 		case $USER_INPUT in
@@ -199,7 +199,7 @@ clone_dotrepo() {
 		printf "\n%s" "[+] ${BOLD}Successfully configured! Saved repository information to .config/dotify.repo.${RESET}"
 	else
 		# repository not found, connection error, or server error, so exit
-		printf "\n%s" "[-] ${BOLD}Either $DOT_REPO is not found, you have a bad connection, or the server is experiencing problems. Check your connection and try again. If the repository is not found, make sure that you created the target repository.${RESET}"
+		printf "\n%s\n" "[-] ${BOLD}Either $DOT_REPO is not found, you have a bad connection, or the server is experiencing problems. Check your connection and try again. If the repository is not found, make sure that you created the target repository.${RESET}"
 		exit 1
 	fi
 }
