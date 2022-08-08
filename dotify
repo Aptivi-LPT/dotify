@@ -194,7 +194,7 @@ clone_dotrepo() {
 	
 	if git -C "${HOME}" clone "${DOT_REPO}"; then
 		if [[ $DOT_REPO ]]; then
-			printf "$DOT_REPO" >> ${HOME}/.config/dotify.repo
+			printf "$DOT_REPO" > ${HOME}/.config/dotify.repo
 		fi
 		printf "\n%s" "[+] ${BOLD}Successfully configured! Saved repository information to .config/dotify.repo.${RESET}"
 	else
