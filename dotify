@@ -133,7 +133,7 @@ dot_pull() {
 }
 
 diff_check() {
-	[[ -z $1 ]] && local file_arr
+	local file_arr
 
 	# dotfiles in repository
 	if [[ -z $2 ]]; then
@@ -161,7 +161,7 @@ diff_check() {
 }
 
 dot_push() {
-	diff_check
+	diff_check "" $1
 	if [[ ${#file_arr} != 0 ]]; then
 		printf "\n%s\n" "[*] ${BOLD}It has been determined that the dotfiles have changed. Copying the updated version...${RESET}"
 		for file in "${file_arr[@]}"; do
@@ -227,6 +227,7 @@ manage() {
 		printf "\n%s"   "[${BOLD}10${RESET}]  List remote (with folders)"
 		printf "\n%s"   "[${BOLD}11${RESET}]  Copy to remote (with folders)"
 		printf "\n%s"   "[${BOLD}12${RESET}]  Copy to local (with folders)"
+		printf "\n%s"   "[${BOLD}13${RESET}]  Push all changes to remote (with folders)"
 		printf "\n%s\n" "[${BOLD}q/Q${RESET}] Exit dotify"
 		read -p "Select option [${BOLD}2${RESET}]: " -n 2 -r USER_INPUT
 		
@@ -244,6 +245,7 @@ manage() {
 			[10]* )  find_remote_dotfiles "yes";;
 			[11]* )  copy_local_to_remote "yes";;
 			[12]* )  copy_remote_to_local "yes";;
+			[13]* )  dot_push "yes";;
 			[q/Q]* ) exit;;
 			* )      printf "\n%s\n" "[-] Selected input is not valid.";;
 		esac
