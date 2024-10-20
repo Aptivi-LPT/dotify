@@ -1,18 +1,38 @@
-name: Publish release on tag
+name: Prepare release
+
 on:
   push:
     tags:
-      - '*'
-
+      - '**'
+    
 jobs:
   build:
-    name: Publish binaries
-    runs-on: windows-latest
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-    - uses: actions/checkout@v2
-    - name: Make a release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: dotify
-        draft: true
-        name: "Version v"
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          ref: ${{ github.ref }}
+      - name: Release Changelogs
+        id: release-changes
+        run: |
+          echo "SUBJECT=$(cat CHANGES.TITLE)" >> "$GITHUB_OUTPUT"
+          echo 'BODY<<EOF' >> "$GITHUB_OUTPUT"
+          cat CHANGES >> "$GITHUB_OUTPUT"
+          printf "\n- SHA256 sum of dotify: " >> "$GITHUB_OUTPUT"
+          sha256sum dotify >> "$GITHUB_OUTPUT"
+          echo 'EOF' >> "$GITHUB_OUTPUT"
+      - name: Release Making
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dotify
+          body: ${{ steps.release-changes.outputs.BODY }}
+          name: ${{ steps.release-changes.outputs.SUBJECT }}
+      - name: Notify build
+        uses: tsickert/discord-webhook@v6.0.0
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          content: "<:branding:1268904791199842385> ${{ steps.release-changes.outputs.SUBJECT }} <:branding:1268904791199842385>\n\n${{ steps.release-changes.outputs.BODY }}"
