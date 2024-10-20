@@ -1,16 +1,16 @@
-BskyId has been updated!
+dotify has been updated to make the shell script shorter.
 
 ### Changes
 
 This release contains a variety of changes, including, but not limited to:
 
-- `[*]` Placeholder
+- `[*]` Shortened the shell script
 
 Review the commit history if you want to get a deep insight about the changes.
 
 ### Feedback?
 
-If you have issues with this version, report to us by [making a new issue ticket](https://github.com/Aptivi/BskyId/issues/new).
+If you have issues with this version, report to us by [making a new issue ticket](https://github.com/Aptivi/dotify/issues/new).
 
 ### Sum hashes
 
