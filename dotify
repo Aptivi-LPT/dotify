@@ -25,11 +25,11 @@
 
 # version information
 IFS=$'\n'
-VERSION="0.4.1"
+VERSION="0.4.2"
 DOT_REPO=""
 
 # check if tput exists
-if  ! command -v tput &> /dev/null; then
+if ! command -v tput &> /dev/null; then
     # tput could not be found
     BOLD=""
     RESET=""
@@ -82,43 +82,31 @@ copy_local_to_remote() {
     include_folders=$1
     printf "%s\n" "[*] ${BOLD}Copying local dotfiles to remote...${RESET}"
     dot_repo="${HOME}/$(basename "${DOT_REPO}")"
-    if [[ -z $include_folders ]]; then
-        find "${HOME}" -maxdepth 1 -name ".*" -type f -exec cp -r '{}' $dot_repo \;
-    else
-        find "${HOME}" -maxdepth 1 -name ".*" -exec cp -r '{}' $dot_repo \;
-    fi
+	[[ -z $include_folders ]] && ARGUMENTS="-type f"
+    find "${HOME}" -maxdepth 1 -name ".*" ${ARGUMENTS} -exec cp -r '{}' $dot_repo \;
 }
 
 copy_remote_to_local() {
     include_folders=$1
     printf "%s\n" "[*] ${BOLD}Copying remote dotfiles to local...${RESET}"
     dot_repo="${HOME}/$(basename "${DOT_REPO}")"
-    if [[ -z $include_folders ]]; then
-        find "$dot_repo" -maxdepth 1 -name ".*" -type f -exec cp -r '{}' ${HOME} \;
-    else
-        find "$dot_repo" -maxdepth 1 -name ".*" -exec cp -r '{}' ${HOME} \;
-    fi
+	[[ -z $include_folders ]] && ARGUMENTS="-type f"
+    find "$dot_repo" -maxdepth 1 -name ".*" ${ARGUMENTS} -exec cp -r '{}' ${HOME} \;
 }
 
 find_dotfiles() {
     include_folders=$1
     printf "\n"
-    if [[ -z $include_folders ]]; then
-        readarray -t dotfiles < <( find "${HOME}" -maxdepth 1 -name ".*" -type f )
-    else
-        readarray -t dotfiles < <( find "${HOME}" -maxdepth 1 -name ".*" )
-    fi
+	[[ -z $include_folders ]] && ARGUMENTS="-type f"
+    readarray -t dotfiles < <( find "${HOME}" -maxdepth 1 -name ".*" ${ARGUMENTS} )
     printf "%s\n" "${dotfiles[@]}"
 }
 
 find_remote_dotfiles() {
     include_folders=$1
     printf "\n"
-    if [[ -z $include_folders ]]; then
-        readarray -t dotfiles < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" -type f )
-    else
-        readarray -t dotfiles < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" )
-    fi
+	[[ -z $include_folders ]] && ARGUMENTS="-type f"
+    readarray -t dotfiles < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" ${ARGUMENTS} )
     printf "%s\n" "${dotfiles[@]}"
 }
 
@@ -136,11 +124,8 @@ diff_check() {
     local file_arr
 
     # dotfiles in repository
-    if [[ -z $2 ]]; then
-        readarray -t dotfiles_repo < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" -type f )
-    else
-        readarray -t dotfiles_repo < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" -not -name ".git" )
-    fi
+	[[ -z $2 ]] && ARGUMENTS="-type f" || ARGUMENTS='-not -name ".git"'
+    readarray -t dotfiles_repo < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" ${ARGUMENTS} )
 
     # check length
     [[ ${#dotfiles_repo[@]} == 0 ]] && return
