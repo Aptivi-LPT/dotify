@@ -30,254 +30,254 @@ DOT_REPO=""
 
 # check if tput exists
 if  ! command -v tput &> /dev/null; then
-        # tput could not be found
-        BOLD=""
-	RESET=""
-	FG_SKYBLUE=""
-	FG_ORANGE=""
-	BG_AQUA=""
-	FG_BLACK=""
-	FG_ORANGE=""
-	UL=""
-	RUL=""
+    # tput could not be found
+    BOLD=""
+    RESET=""
+    FG_SKYBLUE=""
+    FG_ORANGE=""
+    BG_AQUA=""
+    FG_BLACK=""
+    FG_ORANGE=""
+    UL=""
+    RUL=""
 else
-	BOLD=$(tput bold)
-	RESET=$(tput sgr0)
-	FG_SKYBLUE=$(tput setaf 122)
-	FG_ORANGE=$(tput setaf 208)
-	BG_AQUA=$(tput setab 45)
-	FG_BLACK=$(tput setaf 16)
-	FG_ORANGE=$(tput setaf 214)
-	UL=$(tput smul)
-	RUL=$(tput rmul)
+    BOLD=$(tput bold)
+    RESET=$(tput sgr0)
+    FG_SKYBLUE=$(tput setaf 122)
+    FG_ORANGE=$(tput setaf 208)
+    BG_AQUA=$(tput setab 45)
+    FG_BLACK=$(tput setaf 16)
+    FG_ORANGE=$(tput setaf 214)
+    UL=$(tput smul)
+    RUL=$(tput rmul)
 fi
 
 # check if git exists
 if ! command -v git &> /dev/null; then
-	echo "[-] ${BOLD}git needs to be installed to proceed.${RESET}"
-	exit 1
+    echo "[-] ${BOLD}git needs to be installed to proceed.${RESET}"
+    exit 1
 fi
 
 repo_check() {
-	# check if dotfile repo is present inside the home directory
-	DOT_REPO=`cat ${HOME}/.config/dotify.repo`
-	DOT_REPO_NAME=$(basename "${DOT_REPO}")
+    # check if dotfile repo is present inside the home directory
+    DOT_REPO=`cat ${HOME}/.config/dotify.repo`
+    DOT_REPO_NAME=$(basename "${DOT_REPO}")
 
-	# all paths are relative to HOME
-	if [[ -d ${HOME}/${DOT_REPO_NAME} ]]; then
-	        printf "%s\n" "[*] Found ${BOLD}${DOT_REPO_NAME}${RESET} in home directory!"
-	else
-	        printf "%s\n" "[-] ${BOLD}${DOT_REPO_NAME}${RESET} doesn't exist."
-		read -p "[-] ${BOLD}Clone the repository again? [Y/n]: ${RESET}" -n 1 -r USER_INPUT
-		USER_INPUT=${USER_INPUT:-y}
-		case $USER_INPUT in
-			[y/Y]* ) clone_dotrepo "$DOT_REPO" ;;
-			[n/N]* ) printf "\n%s" "[-] ${BOLD}${DOT_REPO_NAME}${RESET} not found";;
-			* )      printf "\n%s" "[-] ${BOLD}Selected input is not valid.${RESET}";;
-		esac
-	fi
+    # all paths are relative to HOME
+    if [[ -d ${HOME}/${DOT_REPO_NAME} ]]; then
+        printf "%s\n" "[*] Found ${BOLD}${DOT_REPO_NAME}${RESET} in home directory!"
+    else
+        printf "%s\n" "[-] ${BOLD}${DOT_REPO_NAME}${RESET} doesn't exist."
+        read -p "[-] ${BOLD}Clone the repository again? [Y/n]: ${RESET}" -n 1 -r USER_INPUT
+        USER_INPUT=${USER_INPUT:-y}
+        case $USER_INPUT in
+            [y/Y]* ) clone_dotrepo "$DOT_REPO" ;;
+            [n/N]* ) printf "\n%s" "[-] ${BOLD}${DOT_REPO_NAME}${RESET} not found";;
+            * )      printf "\n%s" "[-] ${BOLD}Selected input is not valid.${RESET}";;
+        esac
+    fi
 }
 
 copy_local_to_remote() {
-	include_folders=$1
-        printf "%s\n" "[*] ${BOLD}Copying local dotfiles to remote...${RESET}"
-	dot_repo="${HOME}/$(basename "${DOT_REPO}")"
-	if [[ -z $include_folders ]]; then
-	        find "${HOME}" -maxdepth 1 -name ".*" -type f -exec cp -r '{}' $dot_repo \;
-	else
-                find "${HOME}" -maxdepth 1 -name ".*" -exec cp -r '{}' $dot_repo \;
-	fi
+    include_folders=$1
+    printf "%s\n" "[*] ${BOLD}Copying local dotfiles to remote...${RESET}"
+    dot_repo="${HOME}/$(basename "${DOT_REPO}")"
+    if [[ -z $include_folders ]]; then
+        find "${HOME}" -maxdepth 1 -name ".*" -type f -exec cp -r '{}' $dot_repo \;
+    else
+        find "${HOME}" -maxdepth 1 -name ".*" -exec cp -r '{}' $dot_repo \;
+    fi
 }
 
 copy_remote_to_local() {
-        include_folders=$1
-	printf "%s\n" "[*] ${BOLD}Copying remote dotfiles to local...${RESET}"
-	dot_repo="${HOME}/$(basename "${DOT_REPO}")"
-	if [[ -z $include_folders ]]; then
-		find "$dot_repo" -maxdepth 1 -name ".*" -type f -exec cp -r '{}' ${HOME} \;
-	else
-		find "$dot_repo" -maxdepth 1 -name ".*" -exec cp -r '{}' ${HOME} \;
-	fi
+    include_folders=$1
+    printf "%s\n" "[*] ${BOLD}Copying remote dotfiles to local...${RESET}"
+    dot_repo="${HOME}/$(basename "${DOT_REPO}")"
+    if [[ -z $include_folders ]]; then
+        find "$dot_repo" -maxdepth 1 -name ".*" -type f -exec cp -r '{}' ${HOME} \;
+    else
+        find "$dot_repo" -maxdepth 1 -name ".*" -exec cp -r '{}' ${HOME} \;
+    fi
 }
 
 find_dotfiles() {
-	include_folders=$1
-	printf "\n"
-	if [[ -z $include_folders ]]; then
-                readarray -t dotfiles < <( find "${HOME}" -maxdepth 1 -name ".*" -type f )
-	else
-		readarray -t dotfiles < <( find "${HOME}" -maxdepth 1 -name ".*" )
-	fi
-	printf "%s\n" "${dotfiles[@]}"
+    include_folders=$1
+    printf "\n"
+    if [[ -z $include_folders ]]; then
+        readarray -t dotfiles < <( find "${HOME}" -maxdepth 1 -name ".*" -type f )
+    else
+        readarray -t dotfiles < <( find "${HOME}" -maxdepth 1 -name ".*" )
+    fi
+    printf "%s\n" "${dotfiles[@]}"
 }
 
 find_remote_dotfiles() {
-	include_folders=$1
-	printf "\n"
-	if [[ -z $include_folders ]]; then
-		readarray -t dotfiles < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" -type f )
-	else
-		readarray -t dotfiles < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" )
-	fi
-	printf "%s\n" "${dotfiles[@]}"
+    include_folders=$1
+    printf "\n"
+    if [[ -z $include_folders ]]; then
+        readarray -t dotfiles < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" -type f )
+    else
+        readarray -t dotfiles < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" )
+    fi
+    printf "%s\n" "${dotfiles[@]}"
 }
 
 dot_pull() {
-	# pull changes (if any) from the remote repo
-	printf "\n%s\n" "[+] ${BOLD}Updating the dotfiles...${RESET}"
-	dot_repo="${HOME}/$(basename "${DOT_REPO}")"
-	printf "\n%s\n" "  - [+] ${BOLD}Pulling changes in $dot_repo...${RESET}"
-	GIT_BRANCH=$(git -C "$dot_repo" remote show origin | awk '/HEAD/ {print $3}')
-	printf "\n%s\n" "  - [+] ${BOLD}Pulling from ${GIT_BRANCH}${RESET}" 
-	git -C "$dot_repo" pull origin "${GIT_BRANCH}"
+    # pull changes (if any) from the remote repo
+    printf "\n%s\n" "[+] ${BOLD}Updating the dotfiles...${RESET}"
+    dot_repo="${HOME}/$(basename "${DOT_REPO}")"
+    printf "\n%s\n" "  - [+] ${BOLD}Pulling changes in $dot_repo...${RESET}"
+    GIT_BRANCH=$(git -C "$dot_repo" remote show origin | awk '/HEAD/ {print $3}')
+    printf "\n%s\n" "  - [+] ${BOLD}Pulling from ${GIT_BRANCH}${RESET}" 
+    git -C "$dot_repo" pull origin "${GIT_BRANCH}"
 }
 
 diff_check() {
-	local file_arr
+    local file_arr
 
-	# dotfiles in repository
-	if [[ -z $2 ]]; then
-		readarray -t dotfiles_repo < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" -type f )
-	else
-                readarray -t dotfiles_repo < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" -not -name ".git" )
-	fi
+    # dotfiles in repository
+    if [[ -z $2 ]]; then
+        readarray -t dotfiles_repo < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" -type f )
+    else
+        readarray -t dotfiles_repo < <( find "${HOME}/$(basename "${DOT_REPO}")" -maxdepth 1 -name ".*" -not -name ".git" )
+    fi
 
-	# check length
-	[[ ${#dotfiles_repo[@]} == 0 ]] && return
-	for i in "${!dotfiles_repo[@]}"
-	do
-		dotfile_name=$(basename "${dotfiles_repo[$i]}")
+    # check length
+    [[ ${#dotfiles_repo[@]} == 0 ]] && return
+    for i in "${!dotfiles_repo[@]}"
+    do
+        dotfile_name=$(basename "${dotfiles_repo[$i]}")
 
-		# compare the HOME version of dotfile to that of repo
-		diff=$(diff -u --suppress-common-lines --color=always "${dotfiles_repo[$i]}" "${HOME}/${dotfile_name}")
-		if [[ $diff != "" ]]; then
-			if [[ $1 == "show" ]]; then
-				printf "\n\n%s\n" "[*] Comparing between ${BOLD} ${FG_ORANGE}${HOME}/${dotfile_name}${RESET} and ${BOLD}${FG_ORANGE}${dotfiles_repo[$i]}${RESET}..."
-				printf "%s\n\n" "$diff"
-			fi
-			file_arr+=("${dotfile_name}")
-		fi
-	done
+        # compare the HOME version of dotfile to that of repo
+        diff=$(diff -u --suppress-common-lines --color=always "${dotfiles_repo[$i]}" "${HOME}/${dotfile_name}")
+        if [[ $diff != "" ]]; then
+            if [[ $1 == "show" ]]; then
+                printf "\n\n%s\n" "[*] Comparing between ${BOLD} ${FG_ORANGE}${HOME}/${dotfile_name}${RESET} and ${BOLD}${FG_ORANGE}${dotfiles_repo[$i]}${RESET}..."
+                printf "%s\n\n" "$diff"
+            fi
+            file_arr+=("${dotfile_name}")
+        fi
+    done
 }
 
 dot_push() {
-	diff_check "" $1
-	if [[ ${#file_arr} != 0 ]]; then
-		printf "\n%s\n" "[*] ${BOLD}It has been determined that the dotfiles have changed. Copying the updated version...${RESET}"
-		for file in "${file_arr[@]}"; do
-			echo "  - [*] ${BOLD}$file${RESET}"
-			cp "${HOME}/$file" "${HOME}/$(basename "${DOT_REPO}")"
-		done
+    diff_check "" $1
+    if [[ ${#file_arr} != 0 ]]; then
+        printf "\n%s\n" "[*] ${BOLD}It has been determined that the dotfiles have changed. Copying the updated version...${RESET}"
+        for file in "${file_arr[@]}"; do
+            echo "  - [*] ${BOLD}$file${RESET}"
+            cp "${HOME}/$file" "${HOME}/$(basename "${DOT_REPO}")"
+        done
 
-		dot_repo="${HOME}/$(basename "${DOT_REPO}")"
-		git -C "$dot_repo" add -A
+        dot_repo="${HOME}/$(basename "${DOT_REPO}")"
+        git -C "$dot_repo" add -A
 
-		echo "[*] ${BOLD}Enter the commit message below (Ctrl+D when done)${RESET}"
-		commit=$(</dev/stdin)
-		printf "\n"
-		git -C "$dot_repo" commit -m "$commit"
+        echo "[*] ${BOLD}Enter the commit message below (Ctrl+D when done)${RESET}"
+        commit=$(</dev/stdin)
+        printf "\n"
+        git -C "$dot_repo" commit -m "$commit"
 
-		# Run Git Push
-		echo "[*] ${BOLD}Pushing the updated version to the remote repo...${RESET}"
-		git -C "$dot_repo" push
-	else
-		echo "[*] ${BOLD}No updated files to push.${RESET}"
-		return
-	fi
+        # Run Git Push
+        echo "[*] ${BOLD}Pushing the updated version to the remote repo...${RESET}"
+        git -C "$dot_repo" push
+    else
+        echo "[*] ${BOLD}No updated files to push.${RESET}"
+        return
+    fi
 }
 
 clone_dotrepo() {
-	# clone the repo in the destination directory
-	DOT_REPO=$1
-	
-	if git -C "${HOME}" clone "${DOT_REPO}"; then
-		if [[ $DOT_REPO ]]; then
-			printf "$DOT_REPO" > ${HOME}/.config/dotify.repo
-		fi
-		printf "\n%s" "[+] ${BOLD}Successfully configured! Saved repository information to .config/dotify.repo.${RESET}"
-	else
-		# repository not found, connection error, or server error, so exit
-		printf "\n%s\n" "[-] ${BOLD}Either $DOT_REPO is not found, you have a bad connection, or the server is experiencing problems. Check your connection and try again. If the repository is not found, make sure that you created the target repository.${RESET}"
-		exit 1
-	fi
+    # clone the repo in the destination directory
+    DOT_REPO=$1
+    
+    if git -C "${HOME}" clone "${DOT_REPO}"; then
+        if [[ $DOT_REPO ]]; then
+            printf "$DOT_REPO" > ${HOME}/.config/dotify.repo
+        fi
+        printf "\n%s" "[+] ${BOLD}Successfully configured! Saved repository information to .config/dotify.repo.${RESET}"
+    else
+        # repository not found, connection error, or server error, so exit
+        printf "\n%s\n" "[-] ${BOLD}Either $DOT_REPO is not found, you have a bad connection, or the server is experiencing problems. Check your connection and try again. If the repository is not found, make sure that you created the target repository.${RESET}"
+        exit 1
+    fi
 }
 
 initial_setup() {
-	printf "%s\n" "Welcome to ${BOLD}dotify${RESET}! Let's set you up!"
-	printf "%s\n\n" "===================================="
-	read -p "[*] ${BOLD}Enter existing dotfiles repository URL: ${RESET}" -r DOT_REPO
+    printf "%s\n" "Welcome to ${BOLD}dotify${RESET}! Let's set you up!"
+    printf "%s\n\n" "===================================="
+    read -p "[*] ${BOLD}Enter existing dotfiles repository URL: ${RESET}" -r DOT_REPO
 
-	printf "\n%s\n" "[*] ${BOLD}Setting things up...${RESET}"
-	clone_dotrepo "$DOT_REPO"
-	printf "\n%s\n" "[*] ${BOLD}Repository successfully cloned! Press \"2\" to get started.${RESET}"
+    printf "\n%s\n" "[*] ${BOLD}Setting things up...${RESET}"
+    clone_dotrepo "$DOT_REPO"
+    printf "\n%s\n" "[*] ${BOLD}Repository successfully cloned! Press \"2\" to get started.${RESET}"
 }
 
 manage() {
-	while :
-	do
-		printf "\n%s"   "[${BOLD}1${RESET}]   Compare between local and remote"
-		printf "\n%s"   "[${BOLD}2${RESET}]   Push all changes to remote"
-		printf "\n%s"   "[${BOLD}3${RESET}]   Update local dotfiles from remote"
-		printf "\n%s"   "[${BOLD}4${RESET}]   List all local dotfiles"
-		printf "\n%s"   "[${BOLD}5${RESET}]   List all remote dotfiles"
-		printf "\n%s"   "[${BOLD}6${RESET}]   Copy local dotfiles to remote"
-		printf "\n%s"   "[${BOLD}7${RESET}]   Copy remote dotfiles to local"
-		printf "\n%s"   "[${BOLD}8${RESET}]   Compare (with folders)"
-		printf "\n%s"   "[${BOLD}9${RESET}]   List (with folders)"
-		printf "\n%s"   "[${BOLD}10${RESET}]  List remote (with folders)"
-		printf "\n%s"   "[${BOLD}11${RESET}]  Copy to remote (with folders)"
-		printf "\n%s"   "[${BOLD}12${RESET}]  Copy to local (with folders)"
-		printf "\n%s"   "[${BOLD}13${RESET}]  Push all changes to remote (with folders)"
-		printf "\n%s\n" "[${BOLD}q/Q${RESET}] Exit dotify"
-		read -p "Select option [${BOLD}2${RESET}]: " -n 2 -r USER_INPUT
-		
-		USER_INPUT=${USER_INPUT:-2}
-		case $USER_INPUT in
-			[1]* )   diff_check "show";;
-			[2]* )   dot_push;;
-			[3]* )   dot_pull;;
-			[4]* )   find_dotfiles;;
-			[5]* )   find_remote_dotfiles;;
-			[6]* )   copy_local_to_remote;;
-			[7]* )   copy_remote_to_local;;
-			[8]* )   diff_check "show" "yes";;
-			[9]* )   find_dotfiles "yes";;
-			[10]* )  find_remote_dotfiles "yes";;
-			[11]* )  copy_local_to_remote "yes";;
-			[12]* )  copy_remote_to_local "yes";;
-			[13]* )  dot_push "yes";;
-			[q/Q]* ) exit;;
-			* )      printf "\n%s\n" "[-] Selected input is not valid.";;
-		esac
-	done
+    while :
+    do
+        printf "\n%s"   "[${BOLD}1${RESET}]   Compare between local and remote"
+        printf "\n%s"   "[${BOLD}2${RESET}]   Push all changes to remote"
+        printf "\n%s"   "[${BOLD}3${RESET}]   Update local dotfiles from remote"
+        printf "\n%s"   "[${BOLD}4${RESET}]   List all local dotfiles"
+        printf "\n%s"   "[${BOLD}5${RESET}]   List all remote dotfiles"
+        printf "\n%s"   "[${BOLD}6${RESET}]   Copy local dotfiles to remote"
+        printf "\n%s"   "[${BOLD}7${RESET}]   Copy remote dotfiles to local"
+        printf "\n%s"   "[${BOLD}8${RESET}]   Compare (with folders)"
+        printf "\n%s"   "[${BOLD}9${RESET}]   List (with folders)"
+        printf "\n%s"   "[${BOLD}10${RESET}]  List remote (with folders)"
+        printf "\n%s"   "[${BOLD}11${RESET}]  Copy to remote (with folders)"
+        printf "\n%s"   "[${BOLD}12${RESET}]  Copy to local (with folders)"
+        printf "\n%s"   "[${BOLD}13${RESET}]  Push all changes to remote (with folders)"
+        printf "\n%s\n" "[${BOLD}q/Q${RESET}] Exit dotify"
+        read -p "Select option [${BOLD}2${RESET}]: " -n 2 -r USER_INPUT
+        
+        USER_INPUT=${USER_INPUT:-2}
+        case $USER_INPUT in
+            [1]* )   diff_check "show";;
+            [2]* )   dot_push;;
+            [3]* )   dot_pull;;
+            [4]* )   find_dotfiles;;
+            [5]* )   find_remote_dotfiles;;
+            [6]* )   copy_local_to_remote;;
+            [7]* )   copy_remote_to_local;;
+            [8]* )   diff_check "show" "yes";;
+            [9]* )   find_dotfiles "yes";;
+            [10]* )  find_remote_dotfiles "yes";;
+            [11]* )  copy_local_to_remote "yes";;
+            [12]* )  copy_remote_to_local "yes";;
+            [13]* )  dot_push "yes";;
+            [q/Q]* ) exit;;
+            * )      printf "\n%s\n" "[-] Selected input is not valid.";;
+        esac
+    done
 }
 
 entrypoint() {
-	printf "\n%s\n" "${BOLD}${FG_ORANGE} -- Welcome to dotify! Version ${FG_AQUA}v${VERSION} ${FG_ORANGE}-- ${RESET}"
-	logo
-	init_check
+    printf "\n%s\n" "${BOLD}${FG_ORANGE} -- Welcome to dotify! Version ${FG_AQUA}v${VERSION} ${FG_ORANGE}-- ${RESET}"
+    logo
+    init_check
 }
 
 logo() {
-	# print dotify logo
-	printf "%s\n" "${BOLD}${FG_SKYBLUE}"
+    # print dotify logo
+    printf "%s\n" "${BOLD}${FG_SKYBLUE}"
         printf "%s\n" "d ss      sSSSs   sss sssss d d sss  Ss   sS "
         printf "%s\n" "S   ~o   S     S      S     S S        S S   "
         printf "%s\n" "S     b S       S     S     S S         S    "
         printf "%s\n" "S     S S       S     S     S S sSSs    S    "
-	printf "%s\n" "S     P S       S     S     S S         S    "
-	printf "%s\n" "S    S   S     S      S     S S         S    "
+        printf "%s\n" "S     P S       S     S     S S         S    "
+        printf "%s\n" "S    S   S     S      S     S S         S    "
         printf "%s\n" "P ss\"     \"sss\"       P     P P         P  "
         printf "%s\n" "${RESET}"
 }
 
 init_check() {
-	# Read the configuration file and check to see if it is found or if it is empty
-	if [[ ! -e "${HOME}/.config/dotify.repo" ]]; then
-		initial_setup
-	fi
-	repo_check
-	manage
+    # Read the configuration file and check to see if it is found or if it is empty
+    if [[ ! -e "${HOME}/.config/dotify.repo" ]]; then
+        initial_setup
+    fi
+    repo_check
+    manage
 }
 
 entrypoint
