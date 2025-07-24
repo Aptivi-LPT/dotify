@@ -21,8 +21,4 @@ release_job:
   script:
     - 'echo Creating release...'
     - 'BODY="$(echo $BODYBASE64 | base64 -d)"'
-    - 'echo $BODY'
-  release:
-    tag_name: $CI_COMMIT_TAG
-    name: '$SUBJECT'
-    description: '$BODY'
+    - 'release-cli --server-url https://gitlab.com --job-token=$CI_JOB_TOKEN --project-id $CI_PROJECT_ID create --name "$SUBJECT" --description "$BODY" --tag-name "$CI_COMMIT_TAG"'
