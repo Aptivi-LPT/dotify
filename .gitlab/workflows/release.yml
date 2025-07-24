@@ -4,13 +4,8 @@ prepare_job:
     - if: $CI_COMMIT_TAG
   script:
     - 'echo "SUBJECT=$(cat CHANGES.TITLE)" >> variables.env'
-    - |
-      cat >> variables.env << 'EOF'
-      BODY<<HEREDOC
-      $(cat CHANGES)
-      - SHA256 sum of dotify: $(sha256sum dotify)
-      HEREDOC
-      EOF
+    - 'export BODYSET="$(cat CHANGES)\n- SHA256 sum of dotify: $(sha256sum dotify)"'
+    - 'echo "BODYBASE64=$(echo $BODYSET | base64 -w 0)" >> variables.env'
   artifacts:
     reports:
       dotenv: variables.env
@@ -25,6 +20,8 @@ release_job:
     - if: $CI_COMMIT_TAG
   script:
     - 'echo Creating release...'
+    - 'BODY="$(echo $BODYBASE64 | base64 -d)"'
+    - 'echo $BODY'
   release:
     tag_name: $CI_COMMIT_TAG
     name: '$SUBJECT'
