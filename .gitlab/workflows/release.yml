@@ -4,9 +4,9 @@ release_job:
   rules:
     - if: $CI_COMMIT_TAG
   script:
-    - echo "Creating release..."
-    - export SUBJECT="$(cat CHANGES.TITLE)"
-    - export BODY="$(cat CHANGES)\n- SHA256 sum of dotify: $(sha256sum dotify)"
+    - 'echo "Creating release..."'
+    - 'export SUBJECT="$(cat CHANGES.TITLE)"'
+    - 'export BODY="$(cat CHANGES)\n- SHA256 sum of dotify: $(sha256sum dotify)"'
   release:
     tag_name: $CI_COMMIT_TAG
     name: '$SUBJECT'
