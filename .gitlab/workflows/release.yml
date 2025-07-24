@@ -4,7 +4,13 @@ prepare_job:
     - if: $CI_COMMIT_TAG
   script:
     - 'echo "SUBJECT=$(cat CHANGES.TITLE)" >> variables.env'
-    - 'echo "BODY=$(cat CHANGES)\n- SHA256 sum of dotify: $(sha256sum dotify)" >> variables.env'
+    - |
+      cat >> variables.env << 'EOF'
+      BODY<<HEREDOC
+      $(cat CHANGES)
+      - SHA256 sum of dotify: $(sha256sum dotify)
+      HEREDOC
+      EOF
   artifacts:
     reports:
       dotenv: variables.env
