@@ -5,7 +5,7 @@ prepare_job:
   script:
     - 'echo "SUBJECT=$(cat CHANGES.TITLE)" >> variables.env'
     - 'export BODYSET="$(cat CHANGES)\n- SHA256 sum of dotify: $(sha256sum dotify)"'
-    - 'echo "BODYBASE64=$(echo $BODYSET | base64 -w 0)" >> variables.env'
+    - 'echo "BODYBASE64=$(printf ''%s'' "${BODYSET}" | base64 -w 0)" >> variables.env'
   artifacts:
     reports:
       dotenv: variables.env
