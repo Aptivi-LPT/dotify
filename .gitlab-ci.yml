@@ -1,6 +1,0 @@
-stages:
-  - prepare
-  - release
-
-include:
-  - '.gitlab/workflows/release.yml'
